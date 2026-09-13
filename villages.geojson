@@ -1,0 +1,70 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "panchayat_id": "KL-TSR-014",
+        "panchayat_name": "Irinjalakuda",
+        "block_id": "BLK-TSR-03",
+        "district": "Thrissur",
+        "current_risk_level": "medium",
+        "centroid_lat": 10.3428,
+        "centroid_lon": 76.2144
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.2144, 10.3428]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "panchayat_id": "KL-TSR-021",
+        "panchayat_name": "Kodakara",
+        "block_id": "BLK-TSR-03",
+        "district": "Thrissur",
+        "current_risk_level": "low",
+        "centroid_lat": 10.3011,
+        "centroid_lon": 76.2891
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.2891, 10.3011]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "panchayat_id": "KL-IDK-027",
+        "panchayat_name": "Munnar",
+        "block_id": "BLK-IDK-01",
+        "district": "Idukki",
+        "current_risk_level": "high",
+        "centroid_lat": 10.0889,
+        "centroid_lon": 77.0595
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [77.0595, 10.0889]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "panchayat_id": "KL-WYD-009",
+        "panchayat_name": "Mananthavady",
+        "block_id": "BLK-WYD-02",
+        "district": "Wayanad",
+        "current_risk_level": "critical",
+        "centroid_lat": 11.7936,
+        "centroid_lon": 76.0067
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.0067, 11.7936]
+      }
+    }
+  ],
+  "note_for_frontend": "This mock includes only 4 sample villages for local dev. The real /villages endpoint returns all 1,031 Kerala Grama Panchayats, each with a full boundary polygon geometry (not just a centroid point) for polygon rendering. Build the map to render Polygon/MultiPolygon geometry types, not just points, before final integration."
+}
