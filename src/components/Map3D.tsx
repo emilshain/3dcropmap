@@ -11,7 +11,6 @@ interface Map3DProps {
   initialPitch?: number;
   initialBearing?: number;
   className?: string;
-  exaggeration?: number;
   villageData?: any;
 }
 
@@ -71,7 +70,6 @@ export default function Map3D({
   initialPitch = 50,
   initialBearing = -45,
   className = '',
-  exaggeration = 4.0,
   villageData,
 }: Map3DProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -84,7 +82,6 @@ export default function Map3D({
   // Camera & Telemetry state
   const [pitch, setPitch] = useState<number>(initialPitch);
   const [bearing, setBearing] = useState<number>(initialBearing);
-  const [terrainExaggeration, setTerrainExaggeration] = useState<number>(exaggeration);
   const [isOrbiting, setIsOrbiting] = useState<boolean>(false);
   const [currentElevation, setCurrentElevation] = useState<number | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -154,7 +151,7 @@ export default function Map3D({
         ],
         terrain: {
           source: 'terrain-dem-terrarium',
-          exaggeration: terrainExaggeration,
+          exaggeration: 1,
         },
         projection: {
           type: 'globe',
@@ -383,7 +380,7 @@ export default function Map3D({
       map.addControl(
         new maplibregl.TerrainControl({
           source: 'terrain-dem-terrarium',
-          exaggeration: terrainExaggeration,
+          exaggeration: 1,
         }),
         'top-right'
       );
@@ -422,7 +419,7 @@ export default function Map3D({
     const sourceId = provider === 'terrarium' ? 'terrain-dem-terrarium' : 'terrain-dem-maplibre';
     map.setTerrain({
       source: sourceId,
-      exaggeration: terrainExaggeration,
+      exaggeration: 1,
     });
   };
 
@@ -438,17 +435,6 @@ export default function Map3D({
     setBearing(newBearing);
     if (!mapRef.current) return;
     mapRef.current.setBearing(newBearing);
-  };
-
-  // 3D Terrain Exaggeration Adjuster
-  const handleExaggerationChange = (newExag: number) => {
-    setTerrainExaggeration(newExag);
-    if (!mapRef.current) return;
-    const sourceId = terrainProvider === 'terrarium' ? 'terrain-dem-terrarium' : 'terrain-dem-maplibre';
-    mapRef.current.setTerrain({
-      source: sourceId,
-      exaggeration: newExag,
-    });
   };
 
   // Fly to Location Preset
@@ -655,23 +641,6 @@ export default function Map3D({
               value={bearing}
               onChange={(e) => handleBearingChange(Number(e.target.value))}
               style={{ width: '100%', cursor: 'pointer', accentColor: '#3b82f6' }}
-            />
-          </div>
-
-          {/* Elevation Exaggeration Slider */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#cbd5e1' }}>
-              <span>Mountain Height (3D Exaggeration):</span>
-              <b>{terrainExaggeration}x</b>
-            </div>
-            <input
-              type="range"
-              min="1.0"
-              max="6.0"
-              step="0.2"
-              value={terrainExaggeration}
-              onChange={(e) => handleExaggerationChange(Number(e.target.value))}
-              style={{ width: '100%', cursor: 'pointer', accentColor: '#10b981' }}
             />
           </div>
         </div>
