@@ -30,10 +30,10 @@ This document tracks the core technologies, libraries, data sources, and archite
   * **Interactive Sliders:** Real-time **Tilt / Pitch** (0° to 85°), **Rotation / Bearing** (-180° to 180°), and **3D Mountain Height Exaggeration** (1.0x to 8.0x).
   * **3D Mountain Mesh Showcase:** Fast fly-to presets for Mount Diablo, Grand Canyon, Austrian Alps, and Mount Rainier.
   * **Cinematic 360° Auto-Orbit:** Smooth `requestAnimationFrame` continuous rotation.
-* **Tri-Layer Parcel Visualization:**
-  * 🏷️ **Floating Badge Pins:** Floating labels directly pinned above parcels.
-  * 🎨 **2D Ground Fill:** Solid boundary fills on terrain.
-  * 🏢 **3D Fill Extrusions (`fill-extrusion`):** 3D volume blocks elevated across mountain slopes.
+* **2D Parcel & Village Visualization on Map:**
+  * 🏷️ **Floating Badge Pins:** Floating labels directly pinned at parcels and villages.
+  * 🎨 **2D Ground Fill & Outlines:** Crisp vector boundaries and thematic fills draped on terrain with interactive inspection popups.
+  * 📍 **Village Markers:** GeoJSON point circles with risk-level styling.
 
 ---
 

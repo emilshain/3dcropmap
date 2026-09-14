@@ -12,7 +12,7 @@ export default function Home() {
       <Map3DWrapper 
         initialCenter={[-121.865, 37.855]} // Mount Diablo Terraced Crop Parcels
         initialZoom={13}
-        initialPitch={70}
+        initialPitch={50}
         initialBearing={-45}
         villageData={villageData}
       />

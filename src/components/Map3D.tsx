@@ -27,7 +27,7 @@ const LOCATIONS = [
     name: '🌾 Diablo Terraced Crops',
     center: [-121.865, 37.855] as [number, number],
     zoom: 13.0,
-    pitch: 75,
+    pitch: 50,
     bearing: -45,
     desc: 'High-elevation mountain terraced crop parcels climbing up Mount Diablo',
   },
@@ -68,7 +68,7 @@ const LOCATIONS = [
 export default function Map3D({
   initialCenter = [-121.865, 37.855], // Mount Diablo terraced crop parcels
   initialZoom = 13.0,
-  initialPitch = 75,
+  initialPitch = 50,
   initialBearing = -45,
   className = '',
   exaggeration = 4.0,
@@ -245,19 +245,6 @@ export default function Map3D({
           },
         });
 
-        // 3. 3D Extruded Prisms (rendered in 3D space above terrain)
-        map.addLayer({
-          id: 'crops-3d-extrusion',
-          type: 'fill-extrusion',
-          source: 'crops-source',
-          paint: {
-            'fill-extrusion-color': ['get', 'color'],
-            'fill-extrusion-height': ['get', 'height'],
-            'fill-extrusion-base': 0,
-            'fill-extrusion-opacity': 0.88,
-          },
-        });
-
         // --- 3.5. ADD VILLAGES DATA SOURCE ---
         if (villageData) {
           map.addSource('villages-source', {
@@ -312,7 +299,7 @@ export default function Map3D({
 
         el.addEventListener('click', () => {
           setSelectedCrop(props);
-          map.flyTo({ center: coords, zoom: 14.5, pitch: 75, duration: 1000 });
+          map.flyTo({ center: coords, zoom: 14.5, pitch: 50, duration: 1000 });
         });
 
         const marker = new maplibregl.Marker({ element: el })
@@ -356,8 +343,8 @@ export default function Map3D({
         });
       }
 
-      // Interactive Click on 3D Crop Parcel
-      map.on('click', 'crops-3d-extrusion', (e) => {
+      // Interactive Click on 2D Crop Parcel
+      map.on('click', 'crops-2d-fill', (e) => {
         if (e.features && e.features[0]) {
           const props = e.features[0].properties;
           setSelectedCrop(props);
@@ -376,10 +363,10 @@ export default function Map3D({
         }
       });
 
-      map.on('mouseenter', 'crops-3d-extrusion', () => {
+      map.on('mouseenter', 'crops-2d-fill', () => {
         map.getCanvas().style.cursor = 'pointer';
       });
-      map.on('mouseleave', 'crops-3d-extrusion', () => {
+      map.on('mouseleave', 'crops-2d-fill', () => {
         map.getCanvas().style.cursor = '';
       });
 
@@ -753,7 +740,7 @@ export default function Map3D({
               onClick={() => {
                 setSelectedCrop(f.properties);
                 const coords = f.geometry.coordinates[0][0] as [number, number];
-                mapRef.current?.flyTo({ center: coords, zoom: 14.5, pitch: 75, duration: 1000 });
+                mapRef.current?.flyTo({ center: coords, zoom: 14.5, pitch: 50, duration: 1000 });
               }}
               style={{
                 display: 'flex',
