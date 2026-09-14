@@ -156,13 +156,17 @@ export default function Map3D({
           source: 'terrain-dem-terrarium',
           exaggeration: terrainExaggeration,
         },
+        projection: {
+          type: 'globe',
+        },
         sky: {
-          'sky-color': '#38bdf8',
-          'sky-horizon-blend': 0.6,
+          'sky-color': '#0284c7',
+          'sky-horizon-blend': 0.8,
           'horizon-color': '#e0f2fe',
-          'horizon-fog-blend': 0.4,
-          'fog-color': '#bae6fd',
-          'fog-ground-blend': 0.5,
+          'horizon-fog-blend': 1.0,
+          'fog-color': '#ffffff',
+          'fog-ground-blend': 1.0,
+          'atmosphere-blend': 0.85,
         },
       },
       center: initialCenter,
@@ -171,19 +175,13 @@ export default function Map3D({
       bearing: initialBearing,
       maxPitch: 85,
       minPitch: 0,
+      minZoom: 0,
       dragRotate: true,
       touchPitch: true,
     });
 
     mapRef.current = map;
     (window as any).__map = map;
-    const origSetTerrain = map.setTerrain.bind(map);
-    map.setTerrain = function(t: any) {
-      console.log('[Map3D HOOK] map.setTerrain called with:', JSON.stringify(t));
-      const res = origSetTerrain(t);
-      console.log('[Map3D HOOK] map.terrain is now:', !!map.terrain, 'options:', map.getTerrain());
-      return res;
-    };
     console.log('[Map3D] Map initialized');
 
     // Error listener to catch any tile or WebGL issues
@@ -400,6 +398,11 @@ export default function Map3D({
           source: 'terrain-dem-terrarium',
           exaggeration: terrainExaggeration,
         }),
+        'top-right'
+      );
+
+      map.addControl(
+        new maplibregl.GlobeControl(),
         'top-right'
       );
     });

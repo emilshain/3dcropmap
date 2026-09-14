@@ -8,7 +8,7 @@ export default function Home() {
   const villageData = JSON.parse(fileContents);
 
   return (
-    <main style={{ position: 'relative', width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden' }}>
+    <main style={{ position: 'relative', width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden', backgroundColor: '#020617' }}>
       <Map3DWrapper 
         initialCenter={[-121.865, 37.855]} // Mount Diablo Terraced Crop Parcels
         initialZoom={13}
