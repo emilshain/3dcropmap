@@ -19,6 +19,7 @@ export async function GET(
     });
 
     if (!res.ok) {
+      console.warn(`[TERRAIN API] Not found (${res.status}): ${url}`);
       return new NextResponse('Tile not found', { status: res.status });
     }
 

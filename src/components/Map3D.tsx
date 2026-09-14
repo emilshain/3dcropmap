@@ -94,6 +94,9 @@ export default function Map3D({
     if (!mapContainer.current || mapRef.current) return;
 
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    if (typeof window !== 'undefined') {
+      maplibregl.setWorkerUrl(`${origin}/maplibre-gl-worker.mjs`);
+    }
 
     // 1. Initialize Map with Built-in 3D Terrain & Hillshade Relief
     const map = new maplibregl.Map({
@@ -173,6 +176,15 @@ export default function Map3D({
     });
 
     mapRef.current = map;
+    (window as any).__map = map;
+    const origSetTerrain = map.setTerrain.bind(map);
+    map.setTerrain = function(t: any) {
+      console.log('[Map3D HOOK] map.setTerrain called with:', JSON.stringify(t));
+      const res = origSetTerrain(t);
+      console.log('[Map3D HOOK] map.terrain is now:', !!map.terrain, 'options:', map.getTerrain());
+      return res;
+    };
+    console.log('[Map3D] Map initialized');
 
     // Error listener to catch any tile or WebGL issues
     map.on('error', (e) => {
@@ -223,7 +235,19 @@ export default function Map3D({
           },
         });
 
-        // 2. 3D Extruded Prisms
+        // 2. Thick White Outlines (draped on surface)
+        map.addLayer({
+          id: 'crops-outline',
+          type: 'line',
+          source: 'crops-source',
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 3,
+            'line-opacity': 1.0,
+          },
+        });
+
+        // 3. 3D Extruded Prisms (rendered in 3D space above terrain)
         map.addLayer({
           id: 'crops-3d-extrusion',
           type: 'fill-extrusion',
@@ -233,18 +257,6 @@ export default function Map3D({
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': 0,
             'fill-extrusion-opacity': 0.88,
-          },
-        });
-
-        // 3. Thick White Outlines
-        map.addLayer({
-          id: 'crops-outline',
-          type: 'line',
-          source: 'crops-source',
-          paint: {
-            'line-color': '#ffffff',
-            'line-width': 3,
-            'line-opacity': 1.0,
           },
         });
 

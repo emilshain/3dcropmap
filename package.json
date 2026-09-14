@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node -e \"const fs=require('fs'); fs.mkdirSync('public',{recursive:true}); fs.readdirSync('node_modules/maplibre-gl/dist').filter(f=>f.startsWith('maplibre-gl-worker')||f.startsWith('maplibre-gl-shared')).forEach(f=>fs.copyFileSync('node_modules/maplibre-gl/dist/'+f,'public/'+f))\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"

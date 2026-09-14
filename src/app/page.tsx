@@ -10,9 +10,10 @@ export default function Home() {
   return (
     <main style={{ position: 'relative', width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden' }}>
       <Map3DWrapper 
-        initialCenter={[-122.4194, 37.7749]} // San Francisco
-        initialZoom={12}
-        initialPitch={60}
+        initialCenter={[-121.865, 37.855]} // Mount Diablo Terraced Crop Parcels
+        initialZoom={13}
+        initialPitch={70}
+        initialBearing={-45}
         villageData={villageData}
       />
     </main>
