@@ -14,10 +14,13 @@ interface Map3DProps {
   villageData?: any;
 }
 
+const cartoApiKey = process.env.NEXT_PUBLIC_CARTO_API_KEY;
 const BASEMAP_TILES = {
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   osm: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  carto: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+  carto: cartoApiKey && cartoApiKey !== 'your_carto_api_key_here'
+    ? `https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${cartoApiKey}&api_key=${cartoApiKey}`
+    : 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
 };
 
 // 3D Mountain Showcase Locations
@@ -77,7 +80,6 @@ export default function Map3D({
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [selectedCrop, setSelectedCrop] = useState<any>(null);
   const [currentBasemap, setCurrentBasemap] = useState<'osm' | 'satellite' | 'carto'>('satellite');
-  const [terrainProvider, setTerrainProvider] = useState<'terrarium' | 'maplibre'>('terrarium');
 
   // Camera & Telemetry state
   const [pitch, setPitch] = useState<number>(initialPitch);
@@ -121,13 +123,6 @@ export default function Map3D({
             tileSize: 256,
             maxzoom: 15,
           },
-          'terrain-dem-maplibre': {
-            type: 'raster-dem',
-            tiles: ['https://demotiles.maplibre.org/terrain-tiles/{z}/{x}/{y}.png'],
-            encoding: 'mapbox',
-            tileSize: 256,
-            maxzoom: 14,
-          },
         },
         layers: [
           {
@@ -142,9 +137,10 @@ export default function Map3D({
             type: 'hillshade',
             source: 'hillshade-dem-terrarium',
             paint: {
-              'hillshade-exaggeration': 0.95,
-              'hillshade-shadow-color': '#020617',
-              'hillshade-highlight-color': '#ffffff',
+              'hillshade-exaggeration': 0.35,
+              'hillshade-shadow-color': '#0f172a',
+              'hillshade-highlight-color': 'rgba(255, 255, 255, 0.05)',
+              'hillshade-accent-color': 'rgba(0, 0, 0, 0.2)',
               'hillshade-illumination-direction': 315,
             },
           },
@@ -159,11 +155,11 @@ export default function Map3D({
         sky: {
           'sky-color': '#0284c7',
           'sky-horizon-blend': 0.8,
-          'horizon-color': '#e0f2fe',
-          'horizon-fog-blend': 1.0,
-          'fog-color': '#ffffff',
-          'fog-ground-blend': 1.0,
-          'atmosphere-blend': 0.85,
+          'horizon-color': '#bae6fd',
+          'horizon-fog-blend': 0.0,
+          'fog-color': 'rgba(0, 0, 0, 0)',
+          'fog-ground-blend': 0.0,
+          'atmosphere-blend': 0.0,
         },
       },
       center: initialCenter,
@@ -411,18 +407,6 @@ export default function Map3D({
     }
   };
 
-  // Switch DEM Source (AWS Terrarium vs MapLibre RGB)
-  const switchTerrain = (provider: 'terrarium' | 'maplibre') => {
-    setTerrainProvider(provider);
-    if (!mapRef.current) return;
-    const map = mapRef.current;
-    const sourceId = provider === 'terrarium' ? 'terrain-dem-terrarium' : 'terrain-dem-maplibre';
-    map.setTerrain({
-      source: sourceId,
-      exaggeration: 1,
-    });
-  };
-
   // Camera Pitch Adjuster
   const handlePitchChange = (newPitch: number) => {
     setPitch(newPitch);
@@ -565,47 +549,6 @@ export default function Map3D({
           </div>
         </div>
 
-        {/* 3D DEM Provider Selector */}
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>
-            3D Elevation Source
-          </div>
-          <div style={{ display: 'flex', gap: 4 }}>
-            <button
-              onClick={() => switchTerrain('terrarium')}
-              style={{
-                flex: 1,
-                background: terrainProvider === 'terrarium' ? '#10b981' : 'rgba(255,255,255,0.08)',
-                border: 'none',
-                borderRadius: 6,
-                color: '#fff',
-                fontSize: 11,
-                fontWeight: 600,
-                padding: '5px 2px',
-                cursor: 'pointer',
-              }}
-            >
-              AWS Terrarium (Global)
-            </button>
-            <button
-              onClick={() => switchTerrain('maplibre')}
-              style={{
-                flex: 1,
-                background: terrainProvider === 'maplibre' ? '#10b981' : 'rgba(255,255,255,0.08)',
-                border: 'none',
-                borderRadius: 6,
-                color: '#fff',
-                fontSize: 11,
-                fontWeight: 600,
-                padding: '5px 2px',
-                cursor: 'pointer',
-              }}
-            >
-              MapLibre Alps DEM
-            </button>
-          </div>
-        </div>
-
         {/* Manual 3D Camera Controls */}
         <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: 10, marginBottom: 12 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -668,7 +611,7 @@ export default function Map3D({
                   textTransform: 'capitalize',
                 }}
               >
-                {mode === 'osm' ? 'Vector/OSM' : mode}
+                {mode === 'osm' ? 'Vector/OSM' : mode === 'carto' ? (cartoApiKey && cartoApiKey !== 'your_carto_api_key_here' ? 'Carto 🔑' : 'Carto') : mode}
               </button>
             ))}
           </div>
